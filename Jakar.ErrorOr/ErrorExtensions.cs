@@ -10,31 +10,6 @@ public static class ErrorExtensions
     public const string SPACER = "\n    -";
 
 
-    public static StringTags ToStringTags( this ref readonly PasswordValidator.Results results )
-    {
-        using IMemoryOwner<string> owner  = MemoryPool<string>.Shared.Rent(10);
-        Span<string>               errors = owner.Memory.Span;
-        int                        count  = 0;
-        IErrorTitles               titles = IErrorTitles.Current;
-        if ( results.LengthPassed ) { errors[count++] = titles.BlockedPassed; }
-
-        if ( results.MustBeTrimmed ) { errors[count++] = titles.MustBeTrimmed; }
-
-        if ( results.SpecialPassed ) { errors[count++] = titles.SpecialPassed; }
-
-        if ( results.NumericPassed ) { errors[count++] = titles.NumericPassed; }
-
-        if ( results.LowerPassed ) { errors[count++] = titles.LowerPassed; }
-
-        if ( results.UpperPassed ) { errors[count++] = titles.UpperPassed; }
-
-        if ( results.BlockedPassed ) { errors[count] = titles.BlockedPassed; }
-
-        string[] values = [.. errors[..count]];
-        return values;
-    }
-
-
     public static string GetMessage( this Errors errors )
     {
         using PooledArray<string> array = errors.Details.AsValueEnumerable().Select(GetMessage).ToArrayPool();
@@ -50,7 +25,7 @@ public static class ErrorExtensions
         Span<string?>               span  = owner.Memory.Span;
         int                         count = 0;
 
-        foreach ( string error in errors.Select(GetMessage) ) { span[count++] = error; }
+        foreach ( Error error in errors ) { span[count++] = error.GetMessage(); }
 
         StringBuilder sb = new(4096);
         sb.AppendJoin('\n', span);
@@ -60,11 +35,11 @@ public static class ErrorExtensions
     public static string GetMessage( this Error error ) => error.Title.GetMessage(in error.details);
     public static string GetMessage( this string? title, ref readonly StringTags tags )
     {
-        if ( tags.IsEmpty ) { return title ?? EMPTY; }
+        if ( tags.IsEmpty ) { return title ?? string.Empty; }
 
         using ValueStringBuilder builder = new(4096);
 
-        builder.Append(BULLET).Append(title ?? EMPTY);
+        builder.Append(BULLET).Append(title ?? string.Empty);
 
         foreach ( string value in tags.Entries.AsSpan() ) { builder.Append(SPACER).Append(value); }
 

@@ -27,7 +27,7 @@ public static class GoldenSamples
     #if LEGACY
         yield return ( "Error", Error().ToJson() );
     #else
-        yield return ( "Error", Json.Serialize(Error()) );
+        yield return ( "Error", JsonCodec.ToJson(Error()) );
     #endif
     }
 }

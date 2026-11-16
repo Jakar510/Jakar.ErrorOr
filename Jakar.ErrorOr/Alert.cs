@@ -7,7 +7,7 @@ namespace Jakar.Extensions;
 [Serializable]
 [DefaultValue(nameof(Empty))]
 [JsonModel]
-public sealed partial class Alert() : BaseClass<Alert>, IEqualComparable<Alert>
+public sealed partial class Alert() : IEquatable<Alert>, IComparable<Alert>, IComparable
 {
     public static readonly Alert     Empty = new(null);
     public                 bool      IsNotValid => !CheckIsValid(Title, Message);
@@ -15,6 +15,9 @@ public sealed partial class Alert() : BaseClass<Alert>, IEqualComparable<Alert>
     public                 string?   Message    { get; init; }
     public                 string?   Title      { get; init; }
     public                 TimeSpan? TTL        { get; init; }
+
+    /// <summary> JSON members this type doesn't declare, kept so they survive a round trip. </summary>
+    [JsonOverflow] public JObjectNode? AdditionalData { get; set; }
 
 
     public Alert( string? title, string? message, double ttlSeconds ) : this(title, message, TimeSpan.FromSeconds(ttlSeconds)) { }
@@ -32,7 +35,13 @@ public sealed partial class Alert() : BaseClass<Alert>, IEqualComparable<Alert>
     [Pure] public Error ToError( Status status = Status.NotSet ) => Error.Create(status, Title, Message, null, StringTags.Empty);
 
 
-    public override int CompareTo( Alert? other )
+    public int CompareTo( object? other ) => other switch
+                                             {
+                                                 null        => 1,
+                                                 Alert alert => CompareTo(alert),
+                                                 _           => throw new ArgumentException($"Object must be of type {nameof(Alert)}")
+                                             };
+    public int CompareTo( Alert? other )
     {
         if ( ReferenceEquals(this, other) ) { return 0; }
 
@@ -46,7 +55,7 @@ public sealed partial class Alert() : BaseClass<Alert>, IEqualComparable<Alert>
 
         return Nullable.Compare(TTL, other.TTL);
     }
-    public override bool Equals( Alert? other )
+    public bool Equals( Alert? other )
     {
         if ( other is null ) { return false; }
 

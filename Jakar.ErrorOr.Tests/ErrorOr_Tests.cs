@@ -161,10 +161,10 @@ public class ErrorOr_Tests : Assert
     [Test] public void Error_JakarJsonRoundTrip()
     {
         Error  error = CreateValidationError();
-        string json  = Json.Serialize(error);
+        string json  = JsonCodec.ToJson(error);
         this.NotNull(json);
 
-        Error? back = json.FromJson<Error>();
+        Error? back = JsonCodec.FromJson<Error>(json);
         this.NotNull(back);
         this.AreEqual(DESCRIPTION,       back!.Description);
         this.AreEqual(TITLE,             back.Title);
@@ -200,7 +200,7 @@ public class ErrorOr_Tests : Assert
     [Test] public void Error_JakarJsonKeepsDetails()
     {
         Error  error = Error.Validation(CreateTags(), description: DESCRIPTION, title: TITLE);
-        Error? back  = Json.Serialize(error).FromJson<Error>();
+        Error? back  = JsonCodec.FromJson<Error>(JsonCodec.ToJson(error));
         this.NotNull(back);
         this.AreEqual(2,     back!.Details.Tags.Length);
         this.AreEqual(2,     back.Details.Entries.Length);

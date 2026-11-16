@@ -8,7 +8,7 @@ namespace Jakar.Extensions;
 [DefaultValue(nameof(Empty))]
 [method: JsonCreator]
 [JsonModel]
-public sealed partial class Errors() : BaseClass<Errors>, IEqualComparable<Errors>, IValueEnumerable<FromArray<Error>, Error>
+public sealed partial class Errors() : IEquatable<Errors>, IComparable<Errors>, IComparable, IValueEnumerable<FromArray<Error>, Error>
 {
     private static readonly Error[] __details = [];
     public static readonly Errors Empty = new()
@@ -21,6 +21,8 @@ public sealed partial class Errors() : BaseClass<Errors>, IEqualComparable<Error
     public required Alert?  Alert       { get; init; }
     public          string  Description => Details.GetMessage();
     public required Error[] Details     { get; init; }
+    /// <summary> JSON members this type doesn't declare, kept so they survive a round trip. </summary>
+    [JsonOverflow] public JObjectNode? AdditionalData { get; set; }
     public          bool    IsValid     => Alert?.IsValid is true || ( !ReferenceEquals(Details, __details) && Details.Length > 0 );
 
 
@@ -63,13 +65,14 @@ public sealed partial class Errors() : BaseClass<Errors>, IEqualComparable<Error
     public static Status                                   GetStatus( Errors? errors ) => errors?.GetStatus() ?? Status.Ok;
 
 
-    public override bool Equals( Errors? other )
+    public bool Equals( Errors? other )
     {
         if ( other is null ) { return false; }
 
         return ReferenceEquals(this, other) || ( Equals(Alert, other.Alert) && Error.Equals(Details, other.Details) );
     }
-    public override int  CompareTo( Errors? other )                 => string.CompareOrdinal(Description, other?.Description);
+    public          int  CompareTo( Errors? other )                 => string.CompareOrdinal(Description, other?.Description);
+    public          int  CompareTo( object? other )                 => other is null or Errors ? CompareTo((Errors?)other) : throw new ArgumentException($"Object must be of type {nameof(Errors)}");
     public override bool Equals( object?    obj )                   => ReferenceEquals(this, obj) || ( obj is Errors other && Equals(other) );
     public override int  GetHashCode()                              => HashCode.Combine(Alert, Details);
     public static   bool operator ==( Errors? left, Errors? right ) => EqualityComparer<Errors>.Default.Equals(left, right);

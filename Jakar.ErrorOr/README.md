@@ -1,12 +1,12 @@
 ﻿# Jakar.ErrorOr
 
-RFC 7807-style errors and results: Error, Errors, Alert and ErrorOrResult<T>.
+RFC 7807-style errors and results: Error, Errors, Alert and ErrorOrResult<T>, plus the types they're built on: Pair, StringTags, Status.
 
 ```sh
 dotnet add package Jakar.ErrorOr
 ```
 
-Split out of [Jakar.Extensions](https://github.com/Jakar510/Jakar.Extensions) in 10.12.0. It depends on [Jakar.Extensions](https://www.nuget.org/packages/Jakar.Extensions/). The types keep the `Jakar.Extensions` namespace, so code that used them from Jakar.Extensions only needs this package reference (and a recompile).
+Split out of [Jakar.Extensions](https://github.com/Jakar510/Jakar.Extensions) in 10.12. It depends on [Jakar.Json](https://www.nuget.org/packages/Jakar.Json/) only; [Jakar.Extensions](https://www.nuget.org/packages/Jakar.Extensions/) 10.12.1 and later depend on it. The types keep the `Jakar.Extensions` namespace, so code that used them from Jakar.Extensions only needs this package reference (and a recompile). With Jakar.Extensions, use 10.12.1 or later: 10.12.0 defines `Pair`, `StringTags` and `Status` itself.
 
 ## What's in it
 
@@ -15,7 +15,10 @@ Split out of [Jakar.Extensions](https://github.com/Jakar510/Jakar.Extensions) in
 - `ErrorOrResult` / `ErrorOrResult<T>`: a value or its errors.
 - `All`, `Some`, `Success`, `Unknown`: result markers.
 
-`Status`, `StringTags`, `IErrorDetails` and the error titles (`IErrorTitles`) stay in Jakar.Extensions.
+- `Pair`, `StringTags`, `IErrorDetails`: error details.
+- `Status`, `Statuses` (exception → status, titles and type names; `Statuses.RegisterStatus<TException>(status)` adds your own), `IErrorTitles` / `ErrorTitles` (localizable titles).
+
+`Error`, `Errors` and `Alert` keep JSON members they don't declare in `AdditionalData` (`[JsonOverflow]`); they no longer derive from Jakar.Extensions' `BaseClass`. `Error.Unauthorized(PasswordValidator.Results)` and `PasswordValidator.Results.ToStringTags()` are in Jakar.Extensions.
 
 ## Versioning
 

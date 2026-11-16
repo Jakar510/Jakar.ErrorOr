@@ -8,7 +8,7 @@ namespace Jakar.Extensions;
 [Serializable]
 [DefaultValue(nameof(Empty))]
 [JsonModel]
-public sealed partial class Error : BaseClass, IErrorDetails, IEqualComparable<Error>
+public sealed partial class Error : IErrorDetails, IEquatable<Error>, IComparable<Error>, IComparable
 {
     public static readonly     Error      Empty = new(Status.NotSet);
     [JsonSkip] public readonly StringTags details;
@@ -23,16 +23,19 @@ public sealed partial class Error : BaseClass, IErrorDetails, IEqualComparable<E
     public string?    Title      { get;            init; }
     public string?    Type       { get;            init; }
 
+    /// <summary> JSON members this type doesn't declare, kept so they survive a round trip. </summary>
+    [JsonOverflow] public JObjectNode? AdditionalData { get; set; }
 
-    public Error() : base() { }
-    public Error( Status statusCode, string? description = null, string? instance = null, in StringTags details = default, string? title = null, string? type = null ) : base()
+
+    public Error() { }
+    public Error( Status statusCode, string? description = null, string? instance = null, in StringTags details = default, string? title = null, string? type = null )
     {
         Details     = details;
         StatusCode  = statusCode;
         Description = description;
         Instance    = instance;
-        Title       = title ?? statusCode.GetErrorTitle();
-        Type        = type  ?? statusCode.GetErrorType();
+        Title       = title ?? Statuses.GetErrorTitle(statusCode);
+        Type        = type  ?? Statuses.GetErrorType(statusCode);
     }
 
 
@@ -52,7 +55,7 @@ public sealed partial class Error : BaseClass, IErrorDetails, IEqualComparable<E
     public static Error Create( Status status, string? title = null, string? description = null, string? instance = null, StringTags details = default, string? type = null ) => new(status, description, instance, details, title, type);
 
 
-    public static Error Create( Exception e, in StringTags details = default, Status? status = null, string? type = null ) => Create(e, e.Source, e.TryGetMethodSignature(), in details, status, type);
+    public static Error Create( Exception e, in StringTags details = default, Status? status = null, string? type = null ) => Create(e, e.Source, ExceptionTags.TryGetMethodSignature(e), in details, status, type);
     public static Error Create( Exception e, string? title, string? instance, in StringTags details = default, Status? status = null, string? type = null )
     {
         string classType = e.GetType().Name;
@@ -60,13 +63,12 @@ public sealed partial class Error : BaseClass, IErrorDetails, IEqualComparable<E
         return new Error(status ?? Statuses.GetStatusFromException(e),
                          e.Message,
                          instance,
-                         e.GetTags().With(in details),
+                         ExceptionTags.GetTags(e).With(in details),
                          title,
                          type is null
                              ? classType
                              : $"{type}.{classType}");
     }
-    public static Error Unauthorized( ref readonly PasswordValidator.Results results,  string?    instance                      = null, string? description = null, string? type = null ) => Unauthorized(results.ToStringTags(), instance, description, IErrorTitles.Current.PasswordValidation);
     public static Error Unauthorized( string?                                instance, StringTags details                       = default )                                         => Unauthorized(details, instance, title: IErrorTitles.Current.InvalidCredentials);
     public static Error Unauthorized( StringTags                             details,  string?    instance, string? description = null, string? title = null, string? type = null ) => new(Status.Unauthorized, description, instance, details, type: title);
     public static Error NoInternet( StringTags                               details = default )                                                                                                 => Disabled(details, title: IErrorTitles.Current.NoInternet,     type: NO_INTERNET_TYPE);

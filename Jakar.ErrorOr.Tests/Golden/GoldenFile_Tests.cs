@@ -25,7 +25,7 @@ public sealed class GoldenFile_Tests
     /// <summary> File name → (read with 11.0, write with 11.0). </summary>
     private static readonly Dictionary<string, Func<string, string>> __readers = new()
                                                                                  {
-                                                                                     ["Error"]  = static json => Json.Serialize(json.FromJson<Error>()),
+                                                                                     ["Error"]  = static json => JsonCodec.ToJson(JsonCodec.FromJson<Error>(json)),
                                                                                      ["Errors"] = static json => Errors.FromJson(json).ToJson(),
                                                                                      ["Alert"]  = static json => Alert.FromJson(json).ToJson()
                                                                                  };
