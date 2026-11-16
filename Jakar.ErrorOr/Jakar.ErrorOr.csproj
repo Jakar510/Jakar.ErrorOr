@@ -7,7 +7,7 @@
 		<!-- Types stay in the Jakar.Extensions namespace, as every package split out of Jakar.Extensions does (MigrationPlan.md). -->
 		<RootNamespace>Jakar.Extensions</RootNamespace>
 		<AssemblyName>Jakar.ErrorOr</AssemblyName>
-		<Version>10.1.0</Version>
+		<Version>10.2.0</Version>
 		<Title>Jakar.ErrorOr</Title>
 		<PackageId>Jakar.ErrorOr</PackageId>
 		<Authors>Tyler Stegmaier</Authors>
