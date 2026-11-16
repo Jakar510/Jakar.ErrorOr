@@ -13,7 +13,7 @@
 		<Authors>Tyler Stegmaier</Authors>
 		<Description>RFC 7807-style errors and results: Error, Errors, Alert and ErrorOrResult&lt;T&gt;, plus Pair, StringTags and Status.</Description>
 		<PackageTags>error errors result ErrorOr problem-details rfc7807</PackageTags>
-		<PackageReleaseNotes>10.1.0: initial release. Split out of Jakar.Extensions 10.12; the types keep the Jakar.Extensions namespace. Depends on Jakar.Json only: Pair, StringTags, Status, Statuses, IErrorDetails, IErrorTitles/ErrorTitles and NullAsEmptyArrayConverter live here (Jakar.Extensions 10.12.1 type-forwards them; use it, not 10.12.0, alongside this package). Error, Errors and Alert keep unknown JSON members in AdditionalData and no longer derive from BaseClass.</PackageReleaseNotes>
+		<PackageReleaseNotes>10.2.0: BREAKING: depends on Jakar.Json only, no longer on Jakar.Extensions: Pair, StringTags, Status, Statuses, IErrorDetails, IErrorTitles/ErrorTitles and NullAsEmptyArrayConverter live here (Jakar.Extensions 10.12.1 type-forwards them; use it, not 10.12.0, alongside this package). Error, Errors and Alert keep unknown JSON members in AdditionalData and no longer derive from BaseClass. Error.Unauthorized(PasswordValidator.Results) and Results.ToStringTags() moved to Jakar.Extensions. 10.1.0: initial release, split out of Jakar.Extensions 10.12.0 (depends on it; do not use 10.1.0 with Jakar.Extensions 10.12.1 or later).</PackageReleaseNotes>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 		<PackageReadmeFile>README.md</PackageReadmeFile>

@@ -6,7 +6,7 @@ RFC 7807-style errors and results: Error, Errors, Alert and ErrorOrResult<T>, pl
 dotnet add package Jakar.ErrorOr
 ```
 
-Split out of [Jakar.Extensions](https://github.com/Jakar510/Jakar.Extensions) in 10.12. It depends on [Jakar.Json](https://www.nuget.org/packages/Jakar.Json/) only; [Jakar.Extensions](https://www.nuget.org/packages/Jakar.Extensions/) 10.12.1 and later depend on it. The types keep the `Jakar.Extensions` namespace, so code that used them from Jakar.Extensions only needs this package reference (and a recompile). With Jakar.Extensions, use 10.12.1 or later: 10.12.0 defines `Pair`, `StringTags` and `Status` itself.
+Split out of [Jakar.Extensions](https://github.com/Jakar510/Jakar.Extensions) in 10.12. Since 10.2.0 it depends on [Jakar.Json](https://www.nuget.org/packages/Jakar.Json/) only (10.1.0 depended on Jakar.Extensions 10.12.0); [Jakar.Extensions](https://www.nuget.org/packages/Jakar.Extensions/) 10.12.1 and later depend on it. The types keep the `Jakar.Extensions` namespace, so code that used them from Jakar.Extensions only needs this package reference (and a recompile). With Jakar.Extensions, use 10.12.1 or later: 10.12.0 defines `Pair`, `StringTags` and `Status` itself.
 
 ## What's in it
 
